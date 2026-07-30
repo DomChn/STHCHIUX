@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Web App UI</title>
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div class="mobile-container">
+
+        <!-- SCREEN 1: HOMEPAGE -->
+<div id="home-screen" class="screen">
+    
+    <!-- Welcome Header Section -->
+    <header class="user-header">
+        <div class="welcome-text">
+            <span class="greeting">Welcome,</span>
+            <h2 class="user-name">John Doe</h2>
+        </div>
+        <div class="pfp-container">
+            <img src="Images/profile.png" alt="Profile Picture" class="profile-avatar">
+        </div>
+    </header>
+
+    <!-- Recent Destinations Section -->
+    <section class="recent-destinations-section">
+        <div class="section-header-box">
+            <h3 class="section-title">Recent Destinations</h3>
+        </div>
+        <div class="badges-container">
+            <button class="destination-badge" id="badge-taft">
+                Taft Avenue
+                <span class="arrow-icon">&#x2197;</span> <!-- Upper right arrow icon (↖) -->
+            </button>
+        </div>
+    </section>
+
+    <!-- General Traffic / Recent Info Carousel -->
+<section class="info-carousel-section">
+    <div class="section-header-box">
+        <h3 class="section-title">General Traffic Info</h3>
+    </div>
+    
+    <div class="carousel-container">
+        <!-- Card 1 -->
+        <div class="info-card">
+            <img src="Images/info1.jpg" alt="Viva Pit Señor" class="info-card-bg">
+            <div class="info-card-overlay">
+                <span class="info-time">10:30 A.M.</span>
+                <h4 class="info-headline">Possible traffic in Cebu due to "Sto Niño" Celebration</h4>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="info-card">
+            <img src="Images/info2.jpg" alt="Traffic Incident" class="info-card-bg">
+            <div class="info-card-overlay">
+                <span class="info-time">4:32 A.M.</span>
+                <h4 class="info-headline">Hit-and-Run reported at Level 2 Street 12</h4>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="info-card">
+            <img src="Images/info3.jpg" alt="Performance" class="info-card-bg">
+            <div class="info-card-overlay">
+                <span class="info-time">11:45 A.M.</span>
+                <h4 class="info-headline">Local rock band: "The Sick Sevens" plans performance throughout the night</h4>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Rest of home page content (Recent Destinations, etc.) will go here later -->
+
+</div>
+
+        <div id="map-screen" class="screen">
+
+            <!-- 1. Search Locations (Floating Bar) -->
+            <div class="search-container floating">
+                <img src="Images/search.png" alt="Search" class="search-icon">
+                <input type="text" class="search-bar" placeholder="Search Locations">
+                <img src="Images/mic.png" alt="Mic" class="mic-icon">
+            </div>
+
+            <!-- 2. Fullscreen Map View -->
+            <div class="full-map-wrapper">
+                <div class="loading-container map-loading" id="map-loading">
+                    <div class="loading-animation"></div>
+                    <p>Loading Map...</p>
+                </div>
+                <div id="crowd-overlay" class="crowd-overlay"></div>
+                <!-- Using your local map1.png file -->
+                <div id="hotspot-card" class="hotspot-card">
+                    <button id="close-card-btn" class="close-card-btn">&times;</button>
+                    <div class="hotspot-header">
+                        <span id="card-tag" class="card-tag">Location</span>
+                        <span id="card-level" class="card-level">Heavy</span>
+                    </div>
+                    <h4 id="card-title">Location Name</h4>
+                    <p id="card-cause">Cause description goes here...</p>
+                </div>
+
+                <img id="map-image" src="Images/map1.png" alt="Map View">
+            </div>
+            <!-- 3. Floating Choice Badges -->
+            <div class="floating-badges">
+                <button class="badge-btn">3D View</button>
+                <button class="badge-btn" id="btn-crowd">Crowd Density</button>
+                <button class="badge-btn">Transpo Hot-spots</button>
+            </div>
+
+            <!-- 4. Collapsible Bottom Description Drawer -->
+            <div class="bottom-sheet" id="bottom-sheet">
+                <!-- Trigger Badge to toggle drawer -->
+                <button class="view-desc-badge" id="toggle-desc-btn">View Description</button>
+                
+                <div class="description-content" id="description-section">
+                    <div class="loading-container description-loading" id="description-loading">
+                        <div class="loading-animation"></div>
+                        <p>Loading details...</p>
+                    </div>
+                    
+                    <div id="location-description">
+                        <h3>Metro Manila Traffic & Crowd Overview</h3>
+                        <p>Overall crowd density is moderate across major transit corridors. High congestion is concentrated around main interchange hubs during peak evening hours (5:00 PM - 8:00 PM).</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SCREEN 3: PROFILE (Initial Blank) -->
+        <div id="profile-screen" class="screen">
+            <h3>Profile</h3>
+            <p>(Initial Blank Screen)</p>
+        </div>
+
+        <!-- BOTTOM NAVIGATION BAR -->
+        <div class="bottom-navbar">
+            <div class="nav-item active" id="nav-home">
+                <img src="Images/home.png" alt="Home" class="nav-icon">
+            </div>
+            <div class="nav-item" id="nav-map">
+                <img src="Images/maps.png" alt="Map" class="nav-icon">
+            </div>
+            <div class="nav-item" id="nav-profile">
+                <img src="Images/profile.png" alt="Profile" class="nav-icon">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Link to external JS -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,649 @@
+/* --- Global & Container Setup --- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #C1F3CE; /* Light Green background */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container mimicking a mobile device */
+.mobile-container {
+    width: 100%;
+    max-width: 430px;
+    height: 100dvh;
+    background-color: #fff;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 600px) {
+    .mobile-container {
+        height: 700px;
+        border-radius: 24px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+}
+
+/* --- Screens Base --- */
+.screen {
+    display: none;
+    flex-direction: column;
+    padding: 16px;
+    height: calc(100% - 65px);
+}
+
+#home-screen, 
+#profile-screen {
+    justify-content: center;
+    align-items: center;
+    color: #777;
+}
+
+/* --- Fullscreen Map Screen Layout --- */
+#map-screen {
+    position: relative;
+    padding: 0; /* Clear padding so the map stretches edge-to-edge */
+    height: calc(100% - 65px);
+    overflow: hidden;
+}
+
+/* 1. Floating Search Bar */
+.search-container.floating {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    z-index: 10;
+    margin-bottom: 0;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px 40px;
+    border: none;
+    border-radius: 25px;
+    font-size: 15px;
+    outline: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.search-icon, 
+.mic-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    pointer-events: none;
+    z-index: 11;
+}
+
+.search-icon {
+    left: 15px;
+}
+
+.mic-icon {
+    right: 15px;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* 2. Fullscreen Map View */
+.full-map-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    z-index: 1;
+    overflow: hidden;
+}
+
+#map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-100%);
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+#map-image.loaded {
+    transform: translateY(0);
+}
+
+/* 3. Floating Choice Badges */
+.floating-badges {
+    position: absolute;
+    top: 70px;
+    left: 16px;
+    right: 16px;
+    z-index: 10;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.floating-badges::-webkit-scrollbar {
+    display: none;
+}
+
+.badge-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #444;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.badge-btn:active {
+    background-color: #e0e0e0;
+    transform: scale(0.96);
+}
+
+.badge-btn.active {
+    background-color: #2ECC71;
+    color: #fff;
+    border-color: #27AE60;
+}
+
+/* 4. Sliding Bottom Sheet & "View Description" Badge */
+.bottom-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 25; /* Keeps sheet cleanly above hotspot card when sliding open */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(calc(100% - 36px));
+}
+
+.bottom-sheet.open {
+    transform: translateY(0);
+}
+
+.view-desc-badge {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px 20px 0 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
+}
+
+.description-content {
+    width: 100%;
+    height: 180px;
+    background-color: #fff;
+    padding: 16px;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.description-text {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #333;
+}
+
+.location-tag {
+    background-color: #888;
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+#location-description {
+    display: none;
+}
+
+.dotted-line {
+    height: 1px;
+    border-top: 1px dotted #888;
+    margin-top: 10px;
+}
+
+/* --- Bottom Navigation Bar --- */
+.bottom-navbar {
+    height: 65px;
+    border-top: 1px solid #ccc;
+    background-color: #fff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 30;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    cursor: pointer;
+    user-select: none;
+    width: 50px;
+    height: 40px;
+    border-radius: 20px;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.nav-item.active {
+    background-color: #E2F9E8;
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 0.45;
+}
+
+.nav-item.active .nav-icon {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* --- Animations & Loaders --- */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-animation {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 4px solid #333;
+    animation: spin 1s linear infinite;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    color: #777;
+    font-size: 0.9rem;
+}
+
+/* --- Crowd Overlay & Dots --- */
+.crowd-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.crowd-dot {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.crowd-dot.medium {
+    background-color: rgba(241, 196, 15, 0.85);
+    border: 2px solid #f39c12;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.6);
+}
+
+.crowd-dot.heavy {
+    background-color: rgba(231, 76, 60, 0.85);
+    border: 2px solid #c0392b;
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.6);
+}
+
+.crowd-dot.surge {
+    background-color: rgba(230, 126, 34, 0.9);
+    border: 2px solid #d35400;
+    box-shadow: 0 0 10px rgba(230, 126, 34, 0.7);
+}
+
+.crowd-dot.visible {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* --- Interactive Hotspot Info Card --- */
+.hotspot-card {
+    position: absolute;
+    bottom: 80px;
+    left: 16px;
+    right: 16px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    z-index: 18;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    animation: slideUpFade 0.25s ease-out forwards;
+}
+
+.hotspot-card.active {
+    display: flex;
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hotspot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 24px;
+}
+
+.card-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-level {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: #fff;
+}
+
+.card-level.heavy {
+    background-color: #c0392b;
+}
+
+.card-level.medium {
+    background-color: #d35400;
+}
+
+.card-level.surge {
+    background-color: #e67e22;
+}
+
+.hotspot-card h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #222;
+}
+
+.hotspot-card p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+.close-card-btn {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    color: #888;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    transition: color 0.2s ease;
+}
+
+.close-card-btn:hover {
+    color: #333;
+}
+
+/* --- Home Page Header Setup --- */
+#home-screen {
+    padding: 28px 24px 32px 24px; /* Increased side and vertical padding */
+    display: flex;
+    flex-direction: column;
+    gap: 32px; /* Adds consistent spacing between all main sections */
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 16px;
+    margin-bottom: 0; /* Handled cleanly by #home-screen gap */
+    padding-top: 4px;
+}
+.welcome-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome-text .greeting {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.1;
+}
+
+.welcome-text .user-name {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin: 4px 0 0 0;
+    line-height: 1.1;
+}
+
+.pfp-container {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;              /* Prevents the profile box from squishing */
+    background-color: #dcdcdc;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.profile-avatar {
+    width: 65%;
+    height: 65%;
+    object-fit: contain;
+    opacity: 0.6; /* Softens icon to look like a default placeholder */
+}
+
+.recent-destinations-section {
+    margin-bottom: 0; /* Handled cleanly by #home-screen gap */
+    width: 100%;
+}
+
+.section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 16px 0; /* Increased margin under headings */
+}
+
+/* Container for holding badges */
+.badges-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+/* Destination Pill Badge */
+.destination-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #e0e0e0;
+    color: #222;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.destination-badge:hover {
+    background-color: #d0d0d0;
+}
+
+.destination-badge:active {
+    transform: scale(0.96);
+    background-color: #c5c5c5;
+}
+
+.destination-badge .arrow-icon {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1;
+}
+
+/* --- Info Carousel Section --- */
+.info-carousel-section {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+/* Horizontal Scroll Container */
+.carousel-container {
+    display: flex;
+    gap: 16px; /* Slightly widened space between cards */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 12px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar for a clean mobile UI */
+.carousel-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Individual Carousel Card */
+.info-card {
+    flex: 0 0 85%; /* Shows 85% of card so next card peeks into view */
+    max-width: 320px;
+    height: 170px;
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    scroll-snap-align: start;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Background Image */
+.info-card-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Gradient Overlay for Text Readability */
+.info-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 14px 12px 14px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.info-time {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #2ecc71; /* Accent green color */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.info-headline {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.35;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.section-header-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid #2ecc71; /* Green accent strip to match app theme */
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.section-header-box .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+}
